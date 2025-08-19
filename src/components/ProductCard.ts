@@ -8,7 +8,7 @@ export default class ProductCard {
 		this.element = template.content.firstElementChild!.cloneNode(true) as HTMLElement;
 
 		this.element.querySelector('.card__title')!.textContent = product.title;
-		this.element.querySelector('.card__price')!.textContent = `${product.price} синапсов`;
+		this.element.querySelector('.card__price')!.textContent = product.price ? `${product.price} синапсов`: 'бесценно';
 
 		const img = this.element.querySelector<HTMLImageElement>('.card__image')!;
 		img.src = `${CDN_URL}/${product.image}`;
