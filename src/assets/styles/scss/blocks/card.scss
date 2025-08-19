@@ -1,5 +1,5 @@
-@use "variables" as *;
-@use "mixins";
+@use "../variables" as *;
+@use "../mixins";
 
 .card {
   @include mixins.flex(column);
@@ -83,8 +83,7 @@
 
   }
   &__price {
-    font-size: $mainFontSize;
+  font-size: $mainFontSize;
     text-align: left;
-
   }
 }

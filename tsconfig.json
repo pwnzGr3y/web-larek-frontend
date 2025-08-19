@@ -6,10 +6,11 @@
     "target": "es2022",
     "allowJs": true,
     "experimentalDecorators": true,
+
     "moduleResolution": "node",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
   },
   "include": ["src/**/*.ts", "src/types/*.d.ts"],
 }

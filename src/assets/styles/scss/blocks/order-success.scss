@@ -1,5 +1,5 @@
-@use "variables" as *;
-@use "mixins";
+@use "../variables" as *;
+@use "../mixins";
 
 .order-success {
   @include mixins.flex(column);
@@ -10,7 +10,7 @@
 
   &::before {
     content: " ";
-    @include mixins.background('../images/Subtract.png');
+    @include mixins.background('../../../images/Subtract.png');
     width: 256px;
     height: 256px;
   }
