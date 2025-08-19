@@ -1,4 +1,4 @@
-import BaseClient from '@/shared/api/BaseClient';
+import BaseClient from '@/app/api/BaseClient';
 import type { Product, ProductList } from '@/shared/types';
 
 class ProductClient extends BaseClient {
@@ -11,6 +11,10 @@ class ProductClient extends BaseClient {
 	}
 
 	getProductById(id: Product['id']) {
+		if (!id) {
+			return this.handleError('getProductById', 'Для выполнения функции нужен id')
+		}
+
 		return this.get<Product>(`/product/${id}`);
 	}
 }

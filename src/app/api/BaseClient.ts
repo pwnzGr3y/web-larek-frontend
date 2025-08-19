@@ -25,6 +25,10 @@ class BaseClient {
 		}
 	}
 
+	protected handleError(methodName: string, errorText: string) {
+		return console.error(`[${methodName}] ${errorText}`);
+	}
+
 	async get<T extends object>(uri: string): Promise<T> {
 		const response = await fetch(this.baseUrl + uri, {
 			...this.options,
@@ -37,7 +41,7 @@ class BaseClient {
 		uri: string,
 		data: object,
 		method: HttpMethod = HTTP_METHODS.POST
-	): Promise<object | Awaited<T>> {
+	): Promise<object | T> {
 		return await fetch(this.baseUrl + uri, {
 			...this.options,
 			method,
