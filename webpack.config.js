@@ -54,7 +54,7 @@ const config = {
           options: {
             sourceMap: true,
             sassOptions: {
-              includePaths: ["src/scss"]
+              includePaths: ["src/assets/styles/scss"]
             }
           }
         }],
@@ -73,6 +73,9 @@ const config = {
     ],
   },
   resolve: {
+    alias: {
+      '@': path.resolve(__dirname, "src"),
+    },
     extensions: [".tsx", ".ts", ".jsx", ".js", "..."],
   },
   optimization: {

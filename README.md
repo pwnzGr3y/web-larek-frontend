@@ -40,3 +40,30 @@ npm run build
 ```
 yarn build
 ```
+ ## Основные сущности и типы данных
+### Товар (Item)
+```typescript
+export interface IItem {
+id: string;
+index: number: //порядковый номер в каталоге
+title: string;
+description: string;
+category: TItemCategory;
+image: string;
+price: number | null
+}
+```
+### Категории товаров
+```typescript
+export type TItemCategory = 'софт-скил' | 'хард-скил' | 'другое' | 'кнопка' | 'дополнительное';
+
+export const categoryType: Record<TItemCategory, string> = {
+	'софт-скил': 'soft',
+	'хард-скил': 'hard',
+	'другое': 'other',
+	'кнопка': 'button',
+	'дополнительное': 'additional',
+};
+```
+
+

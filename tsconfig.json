@@ -2,11 +2,14 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
-    "module": "es6",
-    "target": "es2017",
+    "module": "es2022",
+    "target": "es2022",
     "allowJs": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src/**/*.ts", "src/types/*.d.ts"]
+  "include": ["src/**/*.ts", "src/types/*.d.ts"],
 }
