@@ -1,44 +1,96 @@
-import type { OrderVariables } from '@/shared/types';
+import type { ContactsFormData } from '@/shared/types';
+import { applyPhoneMask, formatPhoneForSubmission } from '@/shared/utils';
+import { getFieldError } from '@/shared/utils';
 
 export default class ContactsForm {
-	private element: HTMLElement;
+	private readonly element: HTMLElement;
+	private emailError = '';
+	private phoneError = '';
 
-	constructor(onSubmit: (data: Pick<OrderVariables, 'email' | 'phone'>) => void) {
-		const template = document.querySelector<HTMLTemplateElement>('#contacts')!;
-		this.element = template.content.firstElementChild!.cloneNode(true) as HTMLElement;
+	constructor(onSubmit: (data: ContactsFormData) => void) {
+		const template = document.querySelector<HTMLTemplateElement>('#contacts');
+		if (!template) {
+			throw new Error('Contacts template not found');
+		}
+		
+		const firstChild = template.content.firstElementChild;
+		if (!firstChild) {
+			throw new Error('Contacts template content is empty');
+		}
+		this.element = firstChild.cloneNode(true) as HTMLElement;
 
-		const emailInput = this.element.querySelector<HTMLInputElement>('[name="email"]')!;
-		const phoneInput = this.element.querySelector<HTMLInputElement>('[name="phone"]')!;
-		const submitBtn = this.element.querySelector<HTMLButtonElement>('button[type="submit"]')!;
-		const errors = this.element.querySelector<HTMLElement>('.form__errors')!;
+		const emailInput = this.element.querySelector<HTMLInputElement>('[name="email"]');
+		if (!emailInput) {
+			throw new Error('Email input not found');
+		}
+		
+		const phoneInput = this.element.querySelector<HTMLInputElement>('[name="phone"]');
+		if (!phoneInput) {
+			throw new Error('Phone input not found');
+		}
+		
+		const submitBtn = this.element.querySelector<HTMLButtonElement>('button[type="submit"]');
+		if (!submitBtn) {
+			throw new Error('Submit button not found');
+		}
+		
+		const errors = this.element.querySelector<HTMLElement>('.form__errors');
+		if (!errors) {
+			throw new Error('Errors element not found');
+		}
 
-		const validate = () => {
-			const emailValid = /\S+@\S+\.\S+/.test(emailInput.value);
-			const phoneValid = /^\+7\s?\(\d{3}\)\s?\d{3}-\d{2}-\d{2}$/.test(phoneInput.value);
+		// Применяем маску к телефону
+		phoneInput.addEventListener('input', (e) => {
+			applyPhoneMask(e.target as HTMLInputElement);
+			this.validateForm();
+		});
 
-			if (!emailValid) {
-				errors.textContent = 'Введите корректный Email';
-			} else if (!phoneValid) {
-				errors.textContent = 'Введите корректный телефон';
-			} else {
-				errors.textContent = '';
-			}
+		// Валидация email
+		emailInput.addEventListener('input', () => {
+			this.emailError = getFieldError('email', emailInput.value);
+			this.validateForm();
+		});
 
-			submitBtn.disabled = !(emailValid && phoneValid);
-		};
+		// Валидация при потере фокуса
+		emailInput.addEventListener('blur', () => {
+			this.emailError = getFieldError('email', emailInput.value);
+			this.validateForm();
+		});
 
-		emailInput.addEventListener('input', validate);
-		phoneInput.addEventListener('input', validate);
+		phoneInput.addEventListener('blur', () => {
+			this.phoneError = getFieldError('phone', phoneInput.value);
+			this.validateForm();
+		});
 
 		this.element.addEventListener('submit', (e) => {
 			e.preventDefault();
 			if (submitBtn.disabled) return;
 
-			onSubmit({ email: emailInput.value, phone: phoneInput.value });
+			onSubmit({ 
+				email: emailInput.value.trim(), 
+				phone: formatPhoneForSubmission(phoneInput.value) 
+			});
 		});
 	}
 
-	getElement() {
+	private validateForm(): void {
+		const submitBtn = this.element.querySelector<HTMLButtonElement>('button[type="submit"]');
+		const errors = this.element.querySelector<HTMLElement>('.form__errors');
+		
+		if (!submitBtn || !errors) return;
+
+		const allErrors = [this.emailError, this.phoneError].filter(error => error);
+		
+		if (allErrors.length > 0) {
+			errors.textContent = allErrors[0];
+		} else {
+			errors.textContent = '';
+		}
+
+		submitBtn.disabled = allErrors.length > 0;
+	}
+
+	getElement(): HTMLElement {
 		return this.element;
 	}
 }
