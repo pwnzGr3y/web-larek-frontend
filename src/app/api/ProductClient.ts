@@ -1,4 +1,4 @@
-import BaseClient from '@/app/api/BaseClient';
+import { BaseClient } from '@/app/api';
 import type { Product, ProductList } from '@/shared/types';
 
 class ProductClient extends BaseClient {
@@ -6,42 +6,16 @@ class ProductClient extends BaseClient {
 		super(baseUrl, options);
 	}
 
-	// Функция для замены .svg на .png
-	private replaceSvgToPng(product: Product): Product {
-		return {
-			...product,
-			image: product.image.replace(/\.svg$/, '.png')
-		};
+	async getProductList(): Promise<ProductList> {
+		return this.get<ProductList>('/product');
 	}
 
-	// Функция для обработки массива продуктов
-	private replaceSvgToPngInArray(products: Product[]): Product[] {
-		return products.map(product => this.replaceSvgToPng(product));
-	}
-
-	getProductList() {
-		return this.get<ProductList>('/product').then(response => {
-			if (response && response.items) {
-				return {
-					...response,
-					items: this.replaceSvgToPngInArray(response.items)
-				};
-			}
-			return response;
-		});
-	}
-
-	getProductById(id: Product['id']) {
+	async getProductById(id: Product['id']): Promise<Product> {
 		if (!id) {
-			return this.handleError('getProductById', 'Для выполнения функции нужен id');
+			throw new Error('Для выполнения функции нужен id');
 		}
 
-		return this.get<Product>(`/product/${id}`).then(product => {
-			if (product) {
-				return this.replaceSvgToPng(product);
-			}
-			return product;
-		});
+		return this.get<Product>(`/product/${id}`);
 	}
 }
 

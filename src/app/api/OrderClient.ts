@@ -1,4 +1,4 @@
-import BaseClient from '@/app/api/BaseClient';
+import { BaseClient } from '@/app/api';
 import type { OrderResponse, OrderVariables } from '@/shared/types';
 
 class OrderClient extends BaseClient {
@@ -6,9 +6,9 @@ class OrderClient extends BaseClient {
 		super(baseUrl, options);
 	}
 
-	sendOrder(orderVariables: OrderVariables) {
+	async sendOrder(orderVariables: OrderVariables): Promise<OrderResponse> {
 		if (!Object.values(orderVariables).length) {
-			return this.handleError('sendOrder', 'не переданы аргументы для запроса');
+			throw new Error('Не переданы аргументы для запроса');
 		}
 
 		return this.post<OrderResponse>('/order', orderVariables);

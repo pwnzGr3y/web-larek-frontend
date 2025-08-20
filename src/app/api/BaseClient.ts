@@ -20,33 +20,39 @@ class BaseClient {
 			return response.json();
 		} else {
 			const data = await response.json();
-
-			return await Promise.reject(data.error ?? response.statusText);
+			throw new Error(data.error ?? response.statusText);
 		}
 	}
 
-	protected handleError(methodName: string, errorText: string) {
-		return console.error(`[${methodName}] ${errorText}`);
-	}
-
 	async get<T extends object>(uri: string): Promise<T> {
-		const response = await fetch(this.baseUrl + uri, {
-			...this.options,
-			method: HTTP_METHODS.GET,
-		});
-		return this.handleResponse(response);
+		try {
+			const response = await fetch(this.baseUrl + uri, {
+				...this.options,
+				method: HTTP_METHODS.GET,
+			});
+			return this.handleResponse(response);
+		} catch (error) {
+			console.error(`[GET ${uri}] Error:`, error);
+			throw error;
+		}
 	}
 
 	async post<T extends object>(
 		uri: string,
 		data: object,
 		method: HttpMethod = HTTP_METHODS.POST
-	): Promise<object | T> {
-		return await fetch(this.baseUrl + uri, {
-			...this.options,
-			method,
-			body: JSON.stringify(data),
-		}).then(this.handleResponse);
+	): Promise<T> {
+		try {
+			const response = await fetch(this.baseUrl + uri, {
+				...this.options,
+				method,
+				body: JSON.stringify(data),
+			});
+			return this.handleResponse(response);
+		} catch (error) {
+			console.error(`[POST ${uri}] Error:`, error);
+			throw error;
+		}
 	}
 }
 
