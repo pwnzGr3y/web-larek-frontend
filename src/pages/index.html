@@ -22,7 +22,7 @@
 					<img class="header__logo-image" src="<%=require('../assets/images/logo.svg')%>" alt="Film! logo" />
 				</a>
 				<button class="header__basket">
-					<span class="header__basket-counter">0</span>
+					<span class="header__basket-counter"></span>
 				</button>
 			</div>
 		</header>
@@ -33,37 +33,39 @@
 	<div class="modal" id="modal-container">
 		<div class="modal__container">
 			<button class="modal__close" aria-label="закрыть"></button>
-			<div class="modal__content"></div>
+			<div class="modal__content">
+
+			</div>
 		</div>
 	</div>
 
 	<template id="success">
 		<div class="order-success">
 			<h2 class="order-success__title">Заказ оформлен</h2>
-			<p class="order-success__description">Списано 0 синапсов</p>
+			<p class="order-success__description"></p>
 			<button class="button order-success__close">За новыми покупками!</button>
 		</div>
 	</template>
 
 	<template id="card-catalog">
 		<button class="gallery__item card">
-			<span class="card__category card__category_soft">софт-скил</span>
-			<h2 class="card__title">+1 час в сутках</h2>
-			<img class="card__image" src="<%=require('../assets/images/Subtract.svg')%>" alt="" />
-			<span class="card__price">750 синапсов</span>
+			<span class="card__category card__category_soft"></span>
+			<h2 class="card__title"></h2>
+			<img class="card__image" alt="" />
+			<span class="card__price"></span>
 		</button>
 	</template>
 
 	<template id="card-preview">
 		<div class="card card_full">
-			<img class="card__image" src="<%=require('../assets/images/Subtract.svg')%>" alt="" />
+			<img class="card__image card__image_full" alt="" />
 			<div class="card__column">
-				<span class="card__category card__category_other">другое</span>
-				<h2 class="card__title">Бэкенд-антистресс</h2>
-				<p class="card__text">Если планируете решать задачи в тренажёре, берите два.</p>
+				<span class="card__category card__category_other"></span>
+				<h2 class="card__title"></h2>
+				<p class="card__text"></p>
 				<div class="card__row">
-					<button class="button card__button">В корзину</button>
-					<span class="card__price">1000 синапсов</span>
+					<button class="button card__button"></button>
+					<span class="card__price"></span>
 				</div>
 			</div>
 		</div>
@@ -71,20 +73,24 @@
 
 	<template id="card-basket">
 		<li class="basket__item card card_compact">
-			<span class="basket__item-index">1</span>
-			<span class="card__title">Фреймворк куки судьбы</span>
-			<span class="card__price">2500 синапсов</span>
-			<button class="basket__item-delete card__button" aria-label="удалить"></button>
+			<span class="basket__item-index"></span>
+			<span class="card__title"></span>
+			<span class="card__price"></span>
+			<button class="basket__item-delete" aria-label="удалить"></button>
 		</li>
 	</template>
 
 	<template id="basket">
 		<div class="basket">
-			<h2 class="modal__title">Корзина</h2>
+			<div class="basket__header">
+				<h2 class="modal__title">Корзина</h2>
+			</div>
 			<ul class="basket__list"></ul>
-			<div class="modal__actions">
-				<button class="button basket__button">Оформить</button>
-				<span class="basket__price">0 синапсов</span>
+			<div class="basket__footer">
+				<div class="modal__actions">
+					<button class="button basket__button">Оформить</button>
+					<span class="basket__price"></span>
+				</div>
 			</div>
 		</div>
 	</template>
@@ -120,7 +126,7 @@
 				</label>
 				<label class="order__field">
 					<span class="form__label modal__title">Телефон</span>
-					<input name="phone" class="form__input" type="text" placeholder="+7 (" />
+					<input name="phone" class="form__input" type="text" placeholder="+7 (___) ___-__-__" />
 				</label>
 			</div>
 			<div class="modal__actions">

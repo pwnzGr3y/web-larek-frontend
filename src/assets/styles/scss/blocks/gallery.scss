@@ -2,13 +2,17 @@
 @use "../mixins";
 
 .gallery {
-  @include mixins.container;
+  @include mixins.container(4rem, 0, 8rem);
   @include mixins.grid(600px, 24px);
 
   &__item {
     border: none;
     border-radius: $defaultBorderRadius;
     @include mixins.selectable($secondary, 2px, $primaryLight);
+    width: 100%;
+    height: auto;
+    min-height: 600px;
+    box-sizing: border-box;
 
     &::after {
       border-radius: 0.8rem;

@@ -34,4 +34,15 @@
       color: lighten($primaryLight, 23%);
     }
   }
+
+  &__errors {
+    color: $error;
+    font-size: 1.2rem;
+    min-height: 1.6rem;
+    text-align: center;
+    
+    &:empty {
+      display: none;
+    }
+  }
 }

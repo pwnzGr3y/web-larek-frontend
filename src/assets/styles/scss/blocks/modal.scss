@@ -3,14 +3,17 @@
 
 .modal {
   @include mixins.sublayer;
-  // height: max-content;
-  position: absolute;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: none;
   justify-content: center;
+  align-items: center;
   background-color: $overlayBackground;
   z-index: 100;
-  padding-top: 5vh;
-  padding-bottom: 5vh;
+  padding: 2rem;
   box-sizing: border-box;
 
   &_active {
@@ -22,7 +25,8 @@
     @include mixins.flex(column);
     gap: $defaultPadding;
     background-color: $background;
-    // min-height: 90vmin;
+    max-height: 90vh;
+    overflow-y: auto;
     border-radius: 3rem;
     box-sizing: border-box;
     position: relative;
@@ -30,6 +34,7 @@
 
   &__content {
     flex-grow: 1;
+    padding-top: $defaultPadding;
   }
 
   &__title {
@@ -46,10 +51,12 @@
 
   &__close {
     position: absolute;
-    top: calc(#{$defaultPadding} / 2);
-    right: calc(#{$defaultPadding} / 2);
+    top: $defaultPadding;
+    right: $defaultPadding;
     @include mixins.icon(2rem, 'close');
     @include mixins.link(white, $hover);
+    z-index: 10;
+    cursor: pointer;
   }
 
   &__footer {

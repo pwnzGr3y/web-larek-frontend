@@ -5,12 +5,25 @@
   @include mixins.button($primary, white, $hover);
   border: 0;
 
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    
+    &:hover {
+      opacity: 0.3;
+    }
+  }
+
   &_alt {
     @include mixins.button(white, $primaryLight, $primaryLight);
     border: $defaultBorder;
     &:hover {
       border: $hoverBorder;
     }
+  }
+
+  &_alt.active {
+    border: $hoverBorder;
   }
 
   &_alt-active {
