@@ -7,11 +7,21 @@ export type OrderVariables = {
 	email: string;
 	phone: string;
 	address: string;
-	total: number | null;
+	total: number;
 	items: Product['id'][];
 }
 
 export type OrderResponse = {
 	id: Product['id'];
-	total: number | null;
+	total: number;
+}
+
+export interface OrderFormData {
+	payment: PaymentType;
+	address: string;
+}
+
+export interface ContactsFormData {
+	email: string;
+	phone: string;
 }
