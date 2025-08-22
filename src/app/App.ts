@@ -34,8 +34,8 @@ export default class App {
 		
 		this.gallery = new Gallery(galleryContainer);
 		this.basket = new Basket();
-		this.basket.setUpdateCounterCallback(() => {
-			this.updateBasketCounter();
+		this.basket.setUpdateCounterCallback((count: number) => {
+			this.page.updateBasketCounter(count);
 		});
 		this.modals = new ModalManager();
 		
@@ -92,12 +92,9 @@ export default class App {
 	}
 
 	private setupBasketButtonHandler(): void {
-		const basketButton = this.page.getBasketButton();
-		if (basketButton) {
-			basketButton.addEventListener('click', () => {
-				this.modals.open(this.basket.getElement());
-			});
-		}
+		this.page.setBasketButtonClickHandler(() => {
+			this.modals.open(this.basket.getElement());
+		});
 	}
 
 	private async handleProductSelection(product: any): Promise<void> {
@@ -140,23 +137,17 @@ export default class App {
 				this.basket.add(product);
 				this.modals.close();
 				this.updateProductInGallery(product.id, true);
-				this.updateBasketCounter();
 			},
 			onRemove: (product: any) => {
 				this.basket.remove(product.id);
 				this.modals.close();
 				this.updateProductInGallery(product.id, false);
-				this.updateBasketCounter();
 			}
 		};
 	}
 
 	private updateProductInGallery(productId: string, isInBasket: boolean): void {
 		this.gallery.updateProductInBasket(productId, isInBasket);
-	}
-
-	private updateBasketCounter(): void {
-		this.basket.updateCounter(this.page.getBasketCounter());
 	}
 
 	private setupBasketHandlers(): void {
@@ -256,7 +247,6 @@ export default class App {
 		const orderTotal = this.getOrderTotalFromResponse(orderResponse);
 		
 		this.clearBasketAndCloseModal();
-		this.updateBasketCounter();
 		
 		this.showOrderSuccessModal(orderTotal);
 	}

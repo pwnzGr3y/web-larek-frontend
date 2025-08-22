@@ -2,9 +2,11 @@ export default class Page {
 	private basketButton: HTMLElement | null = null;
 	private basketCounter: HTMLElement | null = null;
 	private galleryContainer: HTMLElement | null = null;
+	private onBasketButtonClick?: () => void;
 
 	constructor() {
 		this.initializeElements();
+		this.setupEventHandlers();
 	}
 
 	private initializeElements(): void {
@@ -13,21 +15,25 @@ export default class Page {
 		this.galleryContainer = document.querySelector('.gallery');
 	}
 
-	getBasketButton(): HTMLElement | null {
-		return this.basketButton;
+	private setupEventHandlers(): void {
+		if (this.basketButton) {
+			this.basketButton.addEventListener('click', () => {
+				this.onBasketButtonClick?.();
+			});
+		}
 	}
 
-	getBasketCounter(): HTMLElement | null {
-		return this.basketCounter;
+	setBasketButtonClickHandler(handler: () => void): void {
+		this.onBasketButtonClick = handler;
 	}
 
 	getGalleryContainer(): HTMLElement | null {
 		return this.galleryContainer;
 	}
 
-	setBasketCounterText(text: string): void {
+	updateBasketCounter(count: number): void {
 		if (this.basketCounter) {
-			this.basketCounter.textContent = text;
+			this.basketCounter.textContent = String(count);
 		}
 	}
 }

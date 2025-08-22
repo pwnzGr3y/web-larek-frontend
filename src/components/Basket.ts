@@ -12,7 +12,7 @@ export default class Basket {
 	private readonly STORAGE_KEY = 'basket-items';
 	private validationCache: Map<string, boolean> = new Map();
 	onCheckout?: () => void;
-	private onUpdateCounter?: () => void;
+	private onUpdateCounter?: (count: number) => void;
 
 	constructor() {
 		const template = document.querySelector<HTMLTemplateElement>('#basket');
@@ -184,19 +184,13 @@ export default class Basket {
 		return this.container;
 	}
 
-	setUpdateCounterCallback(callback: () => void): void {
+	setUpdateCounterCallback(callback: (count: number) => void): void {
 		this.onUpdateCounter = callback;
-	}
-
-	updateCounter(counterElement: HTMLElement | null): void {
-		if (counterElement) {
-			counterElement.textContent = String(this.items.length);
-		}
 	}
 
 	private triggerCounterUpdate(): void {
 		if (this.onUpdateCounter) {
-			this.onUpdateCounter();
+			this.onUpdateCounter(this.items.length);
 		}
 	}
 }
