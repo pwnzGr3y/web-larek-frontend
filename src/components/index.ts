@@ -1,8 +1,10 @@
 export { default as Basket } from './Basket';
+export { default as BasketItem } from './BasketItem';
 export { default as ContactsForm } from './ContactsForm';
 export { default as Gallery } from './Gallery';
 export { default as ModalManager } from './ModalManager';
 export { default as OrderForm } from './OrderForm';
 export { default as OrderSuccess } from './OrderSuccess';
+export { default as Page } from './Page';
 export { default as ProductCard } from './ProductCard';
 export { default as ProductPreview } from './ProductPreview';

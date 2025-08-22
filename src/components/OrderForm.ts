@@ -60,14 +60,20 @@ export default class OrderForm {
 			}
 			onSubmit({ payment: this.selectedPayment, address: addressInput.value.trim() });
 		});
+		
+		// Инициализируем валидацию при создании формы
+		this.validateForm();
 	}
 
 	private validateForm(): void {
 		const submitBtn = this.element.querySelector<HTMLButtonElement>('.order__button');
 		const errors = this.element.querySelector<HTMLElement>('.form__errors');
+		const addressInput = this.element.querySelector<HTMLInputElement>('[name="address"]');
 		
-		if (!submitBtn || !errors) return;
+		if (!submitBtn || !errors || !addressInput) return;
 
+		// Проверяем, что все поля заполнены
+		const isAddressFilled = addressInput.value.trim().length > 0;
 		const allErrors = [this.addressError].filter(error => error);
 		
 		if (allErrors.length > 0) {
@@ -76,7 +82,8 @@ export default class OrderForm {
 			errors.textContent = '';
 		}
 
-		submitBtn.disabled = !this.selectedPayment || allErrors.length > 0;
+		// Кнопка активна только если выбран способ оплаты, адрес заполнен и нет ошибок
+		submitBtn.disabled = !this.selectedPayment || !isAddressFilled || allErrors.length > 0;
 	}
 
 	getElement(): HTMLElement {

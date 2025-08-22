@@ -73,4 +73,14 @@ export default class ProductCard {
 	getElement(): HTMLElement {
 		return this.element;
 	}
+
+	updateBasketState(isInBasket: boolean): void {
+		// Здесь можно добавить визуальное отображение состояния корзины
+		// Например, изменить цвет кнопки или добавить иконку
+		if (isInBasket) {
+			this.element.classList.add('card--in-basket');
+		} else {
+			this.element.classList.remove('card--in-basket');
+		}
+	}
 }

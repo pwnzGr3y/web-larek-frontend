@@ -71,14 +71,22 @@ export default class ContactsForm {
 				phone: formatPhoneForSubmission(phoneInput.value) 
 			});
 		});
+		
+		// Инициализируем валидацию при создании формы
+		this.validateForm();
 	}
 
 	private validateForm(): void {
 		const submitBtn = this.element.querySelector<HTMLButtonElement>('button[type="submit"]');
 		const errors = this.element.querySelector<HTMLElement>('.form__errors');
+		const emailInput = this.element.querySelector<HTMLInputElement>('[name="email"]');
+		const phoneInput = this.element.querySelector<HTMLInputElement>('[name="phone"]');
 		
-		if (!submitBtn || !errors) return;
+		if (!submitBtn || !errors || !emailInput || !phoneInput) return;
 
+		// Проверяем, что все поля заполнены
+		const isEmailFilled = emailInput.value.trim().length > 0;
+		const isPhoneFilled = phoneInput.value.trim().length > 0;
 		const allErrors = [this.emailError, this.phoneError].filter(error => error);
 		
 		if (allErrors.length > 0) {
@@ -87,7 +95,8 @@ export default class ContactsForm {
 			errors.textContent = '';
 		}
 
-		submitBtn.disabled = allErrors.length > 0;
+		// Кнопка активна только если все поля заполнены и нет ошибок
+		submitBtn.disabled = !isEmailFilled || !isPhoneFilled || allErrors.length > 0;
 	}
 
 	getElement(): HTMLElement {

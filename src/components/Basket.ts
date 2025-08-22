@@ -1,14 +1,18 @@
 import type { Product } from '@/shared/types';
 import type ProductClient from '@/app/api/ProductClient';
 import { formatPrice } from '@/shared/utils';
+import BasketItem from './BasketItem';
 
 export default class Basket {
 	private items: Product[] = [];
 	private readonly container: HTMLElement;
-	private counter: HTMLElement;
+	private readonly listElement: HTMLElement;
+	private readonly priceElement: HTMLElement;
+	private readonly checkoutButton: HTMLButtonElement;
 	private readonly STORAGE_KEY = 'basket-items';
 	private validationCache: Map<string, boolean> = new Map();
 	onCheckout?: () => void;
+	private onUpdateCounter?: () => void;
 
 	constructor() {
 		const template = document.querySelector<HTMLTemplateElement>('#basket');
@@ -22,14 +26,24 @@ export default class Basket {
 		}
 		
 		this.container = firstChild.cloneNode(true) as HTMLElement;
-
-		const counter = document.querySelector('.header__basket-counter') as HTMLElement;
-		if (!counter) {
-			throw new Error('Basket counter not found');
+		
+		// Находим статичные DOM элементы в конструкторе
+		this.listElement = this.container.querySelector('.basket__list') as HTMLElement;
+		this.priceElement = this.container.querySelector('.basket__price') as HTMLElement;
+		this.checkoutButton = this.container.querySelector('.basket__button') as HTMLButtonElement;
+		
+		if (!this.listElement) {
+			throw new Error('Basket list element not found');
 		}
-		this.counter = counter;
+		if (!this.priceElement) {
+			throw new Error('Basket price element not found');
+		}
+		if (!this.checkoutButton) {
+			throw new Error('Basket checkout button not found');
+		}
 
-		this.container.querySelector('.basket__button')?.addEventListener('click', () => {
+		// Вешаем слушатели в конструкторе
+		this.checkoutButton.addEventListener('click', () => {
 			if (this.canCheckout()) {
 				this.onCheckout?.();
 			}
@@ -45,9 +59,11 @@ export default class Basket {
 				this.items = JSON.parse(stored);
 			}
 			this.render();
+			this.triggerCounterUpdate();
 		} catch (error) {
 			console.warn('Failed to load basket from localStorage:', error);
 			this.render();
+			this.triggerCounterUpdate();
 		}
 	}
 
@@ -64,6 +80,7 @@ export default class Basket {
 		this.validationCache.delete(product.id);
 		this.saveToStorage();
 		this.render();
+		this.triggerCounterUpdate();
 	}
 
 	remove(productId: string): void {
@@ -73,6 +90,7 @@ export default class Basket {
 			this.validationCache.delete(productId);
 			this.saveToStorage();
 			this.render();
+			this.triggerCounterUpdate();
 		}
 	}
 
@@ -80,6 +98,7 @@ export default class Basket {
 		this.items = [];
 		this.saveToStorage();
 		this.render();
+		this.triggerCounterUpdate();
 	}
 
 	getTotal(): number {
@@ -135,69 +154,49 @@ export default class Basket {
 			this.items = validItems;
 			this.saveToStorage();
 			this.render();
+			this.triggerCounterUpdate();
 			alert('Некоторые товары в корзине больше не доступны и были удалены.');
 		}
 	}
 
 	render(): void {
-		const list = this.container.querySelector('.basket__list');
-		if (!list) {
-			console.error('Basket list element not found');
-			return;
-		}
-		list.innerHTML = '';
+		this.listElement.innerHTML = '';
 
 		if (this.items.length === 0) {
 			const emptyMessage = document.createElement('li');
 			emptyMessage.className = 'basket__empty';
 			emptyMessage.textContent = 'Корзина пуста';
-			list.append(emptyMessage);
+			this.listElement.append(emptyMessage);
 		} else {
 			this.items.forEach((item, index) => {
-				const template = document.querySelector<HTMLTemplateElement>('#card-basket');
-				if (!template) {
-					console.error('Card basket template not found');
-					return;
-				}
-
-				const li = template.content.firstElementChild?.cloneNode(true) as HTMLElement;
-				if (!li) {
-					console.error('Card basket template content is empty');
-					return;
-				}
-
-				const indexElement = li.querySelector('.basket__item-index');
-				const titleElement = li.querySelector('.card__title');
-				const priceElement = li.querySelector('.card__price');
-				const deleteButton = li.querySelector('.basket__item-delete');
-
-				if (indexElement) indexElement.textContent = String(index + 1);
-				if (titleElement) titleElement.textContent = item.title;
-				if (priceElement) priceElement.textContent = formatPrice(item.price);
-				
-				if (deleteButton) {
-					deleteButton.addEventListener('click', () => this.remove(item.id));
-				}
-
-				list.append(li);
+				const basketItem = new BasketItem(item, (productId) => this.remove(productId));
+				basketItem.setIndex(index);
+				this.listElement.append(basketItem.getElement());
 			});
 		}
 
 		const total = this.getTotal();
-		const priceElement = this.container.querySelector('.basket__price');
-		if (priceElement) {
-			priceElement.textContent = `${total.toLocaleString('ru-RU')} синапсов`;
-		}
-		
-		const checkoutButton = this.container.querySelector('.basket__button') as HTMLButtonElement;
-		if (checkoutButton) {
-			checkoutButton.disabled = !this.canCheckout();
-		}
-		
-		this.counter.textContent = String(this.items.length);
+		this.priceElement.textContent = `${total.toLocaleString('ru-RU')} синапсов`;
+		this.checkoutButton.disabled = !this.canCheckout();
 	}
 
 	getElement(): HTMLElement {
 		return this.container;
+	}
+
+	setUpdateCounterCallback(callback: () => void): void {
+		this.onUpdateCounter = callback;
+	}
+
+	updateCounter(counterElement: HTMLElement | null): void {
+		if (counterElement) {
+			counterElement.textContent = String(this.items.length);
+		}
+	}
+
+	private triggerCounterUpdate(): void {
+		if (this.onUpdateCounter) {
+			this.onUpdateCounter();
+		}
 	}
 }
